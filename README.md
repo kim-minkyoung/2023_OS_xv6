@@ -1,92 +1,93 @@
-# Operating Systems 2024-1 Assignments
+# 운영체제 2024-1 과제
 
-## Assignment 01: xv6 System Call
+## 과제 01: xv6 시스템 콜
 
-### System Call Handling in xv6
+### xv6에서의 시스템 콜 처리
 
-xv6 handles system calls through traps. When a system call is triggered, the CPU executes the INT instruction to generate a trap. The `usys.S` file uses the INT instruction to handle system calls.
+xv6는 시스템 콜을 트랩을 통해 처리합니다. 시스템 콜이 발생하면 CPU는 INT 명령어를 실행하여 트랩을 생성합니다. `usys.S` 파일은 INT 명령어를 사용하여 시스템 콜을 처리합니다.
 
-- **Trap and System Call Numbers**
-  - Numbers for each trap are defined in `traps.h`, and numbers for system calls are defined in `syscall.h`.
+- **트랩 및 시스템 콜 번호**
+  - 각 트랩의 번호는 `traps.h`에 정의되어 있으며, 시스템 콜의 번호는 `syscall.h`에 정의되어 있습니다.
 
-- **Processing INT n Instruction**
-  - Manages the values of registers eip and esp, and invokes the trap handler from the IDT.
+- **INT n 명령어 처리**
+  - 레지스터 eip와 esp의 값을 관리하고, IDT에서 트랩 핸들러를 호출합니다.
 
-- **Interrupt Descriptor Table (IDT)**
-  - Initialized in `trap.c`, the IDT contains entries for handling traps and interrupts.
+- **인터럽트 디스크립터 테이블 (IDT)**
+  - `trap.c`에서 초기화되며, 트랩과 인터럽트를 처리하기 위한 항목들을 포함합니다.
 
-- **Vector Table**
-  - Defined in `vectors.S`, system call vectors jump to `alltraps` which handles the trap.
+- **벡터 테이블**
+  - `vectors.S`에서 정의되며, 시스템 콜 벡터는 `alltraps`로 점프하여 트랩을 처리합니다.
 
-- **Trap Frame and Trap Function**
-  - `trap.c` checks the trap number and calls the `syscall` function if it matches `T_SYSCALL`.
+- **트랩 프레임 및 트랩 함수**
+  - `trap.c`에서 트랩 번호를 확인하고, `T_SYSCALL`에 해당하면 `syscall` 함수를 호출합니다.
 
-- **syscall Function**
-  - In `syscall.c`, the syscall function uses a function pointer array to call the appropriate system call functions.
+- **syscall 함수**
+  - `syscall.c`에서 syscall 함수는 함수 포인터 배열을 사용하여 적절한 시스템 콜 함수를 호출합니다.
 
-### Assignment 01: Implementing a New System Call
+### 과제 01: 새로운 시스템 콜 구현
 
-**Implementing the `getppid` System Call:**
-- Implement the `getppid` system call, which returns the PID of the parent process.
-- Refer to the `getpid` system call in `sysproc.c`.
+**`getppid` 시스템 콜 구현:**
+- 부모 프로세스의 PID를 반환하는 `getppid` 시스템 콜을 구현합니다.
+- `sysproc.c`에서 `getpid` 시스템 콜을 참고합니다.
 
-**API Definition:**
-- Declare the `getppid` system call in `user.h`.
-- Define the `getppid` macro in `usys.S`.
-- Define the `getppid` number in `syscall.h`.
-- Add the `getppid` pointer to the syscall function pointer array in `syscall.c`.
-- Implement the `sys_getppid` function in `sysproc.c`.
-
----
-
-## Assignment 02: xv6 File System
-
-### xv6 File System Structure and Operation
-
-xv6 implements a simple UNIX-like file system. Understanding its structure and operation is key.
-
-- **Disk and File System Initialization**
-  - Initialized in `fs.c`, which sets up the disk and file system.
-
-- **File System Structure**
-  - **Superblock:** Contains metadata about the file system.
-  - **Inode:** Manages metadata about files and the location of data blocks.
-  - **Data Blocks:** Store the actual file data.
-
-- **File System Functions**
-  - Basic file system functions (read, write, file creation, etc.) are implemented in `fs.c`.
-
-### Assignment 02: Extending File System Features
-
-**Adding File System Features:**
-- **Directory Listing:** Implement a feature to list the contents of a directory.
-- **File Size Retrieval:** Implement a system call to return the size of a file.
-
-**API Definition and Implementation:**
-- Implement new system calls in **`sysfile.c`**.
-- Declare functions for user space calls in **`user.h`**.
+**API 정의:**
+- `user.h`에서 `getppid` 시스템 콜을 선언합니다.
+- `usys.S`에서 `getppid` 매크로를 정의합니다.
+- `syscall.h`에서 `getppid` 번호를 정의합니다.
+- `syscall.c`에서 `getppid` 포인터를 시스템 콜 함수 포인터 배열에 추가합니다.
+- `sysproc.c`에서 `sys_getppid` 함수를 구현합니다.
 
 ---
 
-## Assignment 03: xv6 Scheduling
+## 과제 02: xv6 파일 시스템
 
-### xv6 Scheduling Algorithms
+### xv6 파일 시스템 구조 및 운영
 
-xv6 uses a basic round-robin scheduling algorithm to manage processes. Understanding how scheduling algorithms work is essential.
+xv6는 간단한 UNIX-like 파일 시스템을 구현합니다. 파일 시스템의 구조와 운영을 이해하는 것이 중요합니다.
 
-- **Scheduling Algorithm Overview**
-  - **Round-Robin:** Allocates CPU time to processes in a circular order to ensure fairness.
+- **디스크 및 파일 시스템 초기화**
+  - `fs.c`에서 초기화되며, 디스크와 파일 시스템을 설정합니다.
 
-- **Scheduling Implementation**
-  - Implemented in `proc.c`, which contains scheduling-related functions.
+- **파일 시스템 구조**
+  - **슈퍼블록:** 파일 시스템에 대한 메타데이터를 포함합니다.
+  - **아이노드 (Inode):** 파일과 데이터 블록의 위치에 대한 메타데이터를 관리합니다.
+  - **데이터 블록:** 실제 파일 데이터를 저장합니다.
 
-### Assignment 03: Improving Scheduling Algorithms
+- **파일 시스템 함수**
+  - 기본적인 파일 시스템 함수 (읽기, 쓰기, 파일 생성 등)는 `fs.c`에 구현되어 있습니다.
 
-**Modifying the Scheduling Algorithm:**
-- **Priority-Based Scheduling:** Add functionality to allocate CPU based on process priority.
-- **Multilevel Queue Scheduling:** Implement a multilevel queue system to improve scheduling based on process execution history.
+### 과제 02: 파일 시스템 기능 확장
 
-**API Definition and Implementation:**
-- Implement priority-based and multilevel queue scheduling in **`proc.c`**.
-- Declare functions for scheduling information in **`user.h`**.
+**파일 시스템 기능 추가:**
+- **디렉토리 목록 나열:** 디렉토리의 내용을 나열하는 기능을 구현합니다.
+- **파일 크기 조회:** 파일의 크기를 반환하는 시스템 콜을 구현합니다.
 
+**API 정의 및 구현:**
+- 새로운 시스템 콜을 **`sysfile.c`**에서 구현합니다.
+- 사용자 공간에서 호출할 함수들을 **`user.h`**에 선언합니다.
+
+---
+
+## 과제 03: xv6 스케줄링
+
+### xv6 스케줄링 알고리즘
+
+xv6는 프로세스를 관리하기 위해 기본적인 라운드로빈 스케줄링 알고리즘을 사용합니다. 스케줄링 알고리즘의 작동 방식을 이해하는 것이 중요합니다.
+
+- **스케줄링 알고리즘 개요**
+  - **라운드로빈:** CPU 시간을 프로세스에 순환적으로 할당하여 공정성을 보장합니다.
+
+- **스케줄링 구현**
+  - `proc.c`에 구현되어 있으며, 스케줄링 관련 함수들을 포함합니다.
+
+### 과제 03: 스케줄링 알고리즘 개선
+
+**스케줄링 알고리즘 수정:**
+- **우선 순위 기반 스케줄링:** 프로세스 우선 순위에 따라 CPU를 할당하는 기능을 추가합니다.
+- **다단계 큐 스케줄링:** 프로세스 실행 이력을 기반으로 개선된 스케줄링을 위한 다단계 큐 시스템을 구현합니다.
+
+**API 정의 및 구현:**
+- 우선 순위 기반 및 다단계 큐 스케줄링을 **`proc.c`**에서 구현합니다.
+- 스케줄링 정보를 위한 함수를 **`user.h`**에 선언합니다.
+
+---
